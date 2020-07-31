@@ -2,7 +2,7 @@ const express = require('express');
 
 const parser = require('body-parser');
 
-const { random } = require('crypto');
+const { randomBytes } = require('crypto');
 
 const app = express();
 
@@ -21,17 +21,17 @@ app.get(path, (req, res) => {
 
 // POST
 app.post(path, (req, res) => {
-    const randomId = random(4).toString('hex');
+    const randomId = randomBytes(4).toString('hex');
     const { content } = req.body;
     const comments = commentsByPostId[req.params.id] || [];
     const comment = { id: randomId, content };
     comments.push(comment);
-    res.status(201).send(randomId + comment);
+    res.status(201).send("id & comment: " + randomId + content);
 });
 
 // LISTEN
 app.listen(port, () => {console.log('Listening on port '+ port);});
 
 
-// curl -X  POST -H "Content-Type: application/json" -d '{ "title": "Fist poster"}' http://localhost:4001/posts/someid/comments/
+// curl -X  POST -H "Content-Type: application/json" -d '{ "CONTENT": "Commenting with my FIST."}' http://localhost:4001/posts/someid/comments/
 // curl  http://localhost:4001/posts/someid/comments/
