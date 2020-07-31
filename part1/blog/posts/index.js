@@ -36,3 +36,6 @@ app.listen(portNumber, () => {
     console.log('Listening on '+ portNumber);
 }
 );
+
+// curl -X  POST -H "Content-Type: application/json" -d '{ "title": "Fist poster"}' http://localhost:4000/posts
+// curl http://localhost:4000/posts
