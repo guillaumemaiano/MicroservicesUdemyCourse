@@ -4,6 +4,8 @@ const parser = require('body-parser');
 
 const { randomBytes } = require('crypto');
 
+const cors = require('cors');
+
 const app = express();
 
 const port = 4001;
@@ -12,6 +14,7 @@ const path = '/posts/:id/comments';
 const commentsByPostId = {};
 
 app.use(parser.json());
+app.use(cors());
 
 // GET
 app.get(path, (req, res) => {
@@ -26,7 +29,8 @@ app.post(path, (req, res) => {
     const comments = commentsByPostId[req.params.id] || [];
     const comment = { id: randomId, content };
     comments.push(comment);
-    res.status(201).send("id & comment: " + randomId + content);
+    commentsByPostId[req.params.id] = comments;
+    res.status(201).send("id & comment: "  + randomId + ": " + content);
 });
 
 // LISTEN

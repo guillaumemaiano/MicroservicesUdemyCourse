@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CommentCreate from './CommentCreate';
+import CommentList from './CommentList';
 
 export default() => {
 
@@ -28,6 +29,7 @@ export default() => {
                                             <h3>{post.title}</h3>
                                             </div>
                                             <CommentCreate postId={post.randomId}/>
+                                            <CommentList postId={post.randomId}/>
                                         </div>;
                                     }
                                 );
