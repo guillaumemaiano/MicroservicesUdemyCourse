@@ -2,10 +2,14 @@ const express = require('express');
 
 const parser = require('body-parser');
 
+const cors = require('cors');
+
 const { randomBytes } = require('crypto');
 
 const app = express();
 app.use(parser.json());
+
+app.use(cors());
 
 var portNumber = 4000;
 
