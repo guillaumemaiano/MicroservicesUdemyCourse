@@ -19,6 +19,7 @@ app.use(cors());
 // GET
 app.get(path, (req, res) => {
     const comments = commentsByPostId[req.params.id] || [];
+    // console.log("Comments Array ", commentsByPostId, " : ", comments, ".");
     res.status(200).send(comments);
 });
 
@@ -30,12 +31,12 @@ app.post(path, (req, res) => {
     const comment = { id: randomId, content };
     comments.push(comment);
     commentsByPostId[req.params.id] = comments;
-    res.status(201).send("id & comment: "  + randomId + ": " + content);
+    res.status(201).send("id & comment: "  + randomId + " : " + content);
 });
 
 // LISTEN
 app.listen(port, () => {console.log('Listening on port '+ port);});
 
 
-// curl -X  POST -H "Content-Type: application/json" -d '{ "CONTENT": "Commenting with my FIST."}' http://localhost:4001/posts/someid/comments/
+// curl -X  POST -H "Content-Type: application/json" -d '{ "content": "Commenting with my FIST."}' http://localhost:4001/posts/someid/comments/
 // curl  http://localhost:4001/posts/someid/comments/

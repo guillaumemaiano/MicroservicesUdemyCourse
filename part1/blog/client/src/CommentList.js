@@ -3,14 +3,14 @@ import axios from 'axios';
 
 export default({ postId }) => {
 
-    const commentsUrl = `http://localhost:4001/posts/${postId}}/comments/`;
+    const commentsUrl = `http://localhost:4001/posts/${postId}/comments/`;
 
-    const [comments, setComments] = useState({});
+    const [comments, setComments] = useState([]);
 
     const fetchComments = async () => {
         const res = await axios.get(commentsUrl);
         setComments(res.data);
-        console.log(res.data);
+        console.log(commentsUrl," ",postId, " data: ", res.data, res);
     };
 
     useEffect(
@@ -18,22 +18,21 @@ export default({ postId }) => {
             fetchComments();
         },
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
-    const renderedComments = Object.values(comments)
+    const renderedComments = comments
                                 .map(
                                     comment => {
-                                        console.log('hello');
-                                        console.log(comment.randomId);
-                                        return <div className='comment' key={comment.randomId}>
-                                           {comment.title}
-                                        </div>;
+                                        console.log("comment ", comment.randomId);
+                                        return <li className='comment' key={comment.randomId}>
+                                           {comment.title} {comment.content}
+                                        </li>;
                                     }
                                 );
  
-    return <div className="justify-content-between d-flex flex-right flex-wrap">
+    return <ul className="justify-content-between d-flex flex-right flex-wrap">
         {renderedComments}
-    </div>;
+    </ul>;
 };       
