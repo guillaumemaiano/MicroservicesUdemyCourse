@@ -25,9 +25,8 @@ export default({ postId }) => {
     const renderedComments = comments
                                 .map(
                                     comment => {
-                                        console.log("comment ", comment.randomId);
-                                        return <li className='comment' key={comment.randomId}>
-                                           {comment.title} {comment.content}
+                                        return <li className='comment' key={comment.id}>
+                                            {comment.content }
                                         </li>;
                                     }
                                 );
