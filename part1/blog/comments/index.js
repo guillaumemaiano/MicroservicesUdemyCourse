@@ -2,6 +2,8 @@ const express = require('express');
 
 const parser = require('body-parser');
 
+const axios = require('axios');
+
 const { randomBytes } = require('crypto');
 
 const cors = require('cors');
@@ -9,6 +11,7 @@ const cors = require('cors');
 const app = express();
 
 const port = 4001;
+const eventbusPort = 4005;
 const path = '/posts/:id/comments';
 
 const commentsByPostId = {};
@@ -24,14 +27,24 @@ app.get(path, (req, res) => {
 });
 
 // POST
-app.post(path, (req, res) => {
+app.post(path, async (req, res) => {
     const randomId = randomBytes(4).toString('hex');
+    const postId = req.params.id;
     const { content } = req.body;
-    const comments = commentsByPostId[req.params.id] || [];
+    const comments = commentsByPostId[postId] || [];
     const comment = { id: randomId, content };
     comments.push(comment);
-    commentsByPostId[req.params.id] = comments;
+    commentsByPostId[postId] = comments;
+
+    await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentCreated', data: {id: randomId, postId, content}});
+
     res.status(201).send("id & comment: "  + randomId + " : " + content);
+});
+
+// Event bus communication
+app.post('/events', (req, res) => {
+    console.log("Received event: " + req.body.type);
+    res.send({});
 });
 
 // LISTEN

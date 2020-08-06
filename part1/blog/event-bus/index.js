@@ -17,9 +17,15 @@ app.post('/events', (req, res) => {
 
     const event = req.body;
 
-    for (port in servicePorts) {
+    servicePorts.forEach((port) => {
         axios.post(`http://localhost:${port}/events`, event);
-    }
+        console.log(`posted on ${port}`);
+    });
+    // Note to self: this is not valid JavaScript, you dumb Swift programmer!
+    // for (const port in servicePorts) {
+    //  axios.post(`http://localhost:${port}/events`, event);
+    //  console.log(`posted on ${port}`);
+    // }
     res.send({status: 'OK'});
 });
 

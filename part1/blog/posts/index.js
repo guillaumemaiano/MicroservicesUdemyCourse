@@ -2,6 +2,8 @@ const express = require('express');
 
 const parser = require('body-parser');
 
+const axios = require('axios');
+
 const cors = require('cors');
 
 const { randomBytes } = require('crypto');
@@ -12,6 +14,7 @@ app.use(parser.json());
 app.use(cors());
 
 var portNumber = 4000;
+var eventbusPortNumber = 4005;
 
 const posts = {};
 
@@ -23,7 +26,7 @@ app.get('/posts', (req, res
 );
 
 // POST
-app.post('/posts', (req, res
+app.post('/posts', async (req, res
     ) => {
         // not collision safe
     const randomId = randomBytes(4).toString('hex');
@@ -32,9 +35,17 @@ app.post('/posts', (req, res
     posts[randomId] = {
         randomId, title
     };
+
+    await axios.post(`http://localhost:${eventbusPortNumber}/events`, { type: 'PostCreated', data: posts[randomId]});
     res.status(201).send(posts[randomId]);
 }
 );
+
+// Event bus communication
+app.post('/events', (req, res) => {
+    console.log("Received event: " + req.body.type);
+    res.send({});
+});
 
 app.listen(portNumber, () => {
     console.log('Listening on '+ portNumber);
