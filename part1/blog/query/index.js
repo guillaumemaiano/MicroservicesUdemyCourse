@@ -8,13 +8,22 @@ app.use(parser.json());
 app.use(cors());
 
 const queryPort = 4002;
-const path= 'events';
+const pathToPosts='/posts';
+const pathToEvents= '/events';
+
+const posts = [];
 
 // provides full list of posts and comments
-app.get(path, (req, res) => {});
+app.get(pathToPosts, (req, res) => {
+    
+    res.send({status: 'OK', data: posts});
+});
 
 // event bus communication
-app.post(path, (req, res) => {});
+app.post(pathToEvents, (req, res) => {
+    //switch req.body.type 
+
+});
 
 app.listen(queryPort, () => {
     console.log("Query server listening on " + queryPort);
