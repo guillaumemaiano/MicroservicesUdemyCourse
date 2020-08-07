@@ -10,7 +10,7 @@ const app = express();
 
 app.use(parser.json());
 
-const servicePorts = [4000, 4001, 4002];
+const servicePorts = [4000, 4001, 4002, 4003];
 const busPort = 4005;
 
 app.post('/events', (req, res) => {

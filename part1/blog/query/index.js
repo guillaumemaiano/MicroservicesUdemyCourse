@@ -7,24 +7,39 @@ const app = express();
 app.use(parser.json());
 app.use(cors());
 
-const queryPort = 4002;
-const pathToPosts='/posts';
-const pathToEvents= '/events';
-
-const posts = [];
+const queryPort = (() => {
+    const arguments = process.argv;
+    var customPort;
+    if (arguments.some(function (val, index, arguments) {
+        if (val === 'port') {
+            customPort = arguments[index+1];
+            return true;
+        }
+    })) {
+        console.log(`Custom port detected: ${customPort}`);
+        return customPort;
+    } else {
+        return 4002;
+    }
+    }
+)();
 
 const verbose = (() => {
     const arguments = process.argv;
-    arguments.forEach(function (val, index, arguments) {
+    return arguments.some(function (val, index, arguments) {
         console.log(index + ': ' + val);
         if (val === 'verbose') {
             console.log("Talkative mode engaged. How do you do?")
             return true;
         }
     });
-    return false;
     }
 )();
+
+const pathToPosts='/posts';
+const pathToEvents= '/events';
+
+const posts = [];
 
 // provides full list of posts and comments
 app.get(pathToPosts, (req, res) => {  
@@ -58,6 +73,11 @@ app.post(pathToEvents, (req, res) => {
             // is post modified in place?
             console.log(posts, " Comments ", commentsForPost);
             break;
+        case 'CommentModerated':
+            if (verbose) {
+                console.log('Comment Moderation detected.');
+            }
+            break;
         case 'PostCreated':
             if (verbose) {
                 console.log('Post Creation detected.');
@@ -66,6 +86,8 @@ app.post(pathToEvents, (req, res) => {
             break;
         default:
             console.log('Type unknown, event bus format change unimplemented: ' + req.body.type);
+            res.send(500);
+            return;
         res.send(201);
     }
 

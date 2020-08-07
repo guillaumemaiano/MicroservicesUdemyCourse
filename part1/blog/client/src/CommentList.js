@@ -7,6 +7,7 @@ export default({ comments }) => {
                                     comment => {
                                         return <li className='comment' key={comment.id}>
                                             {comment.content }
+                                            {comment.status}
                                         </li>;
                                     }
                                 );
