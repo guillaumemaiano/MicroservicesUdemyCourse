@@ -19,8 +19,7 @@ var eventbusPortNumber = 4005;
 const posts = {};
 
 // GET
-app.get('/posts', (req, res
-) => {
+app.get('/posts', (req, res) => {
     res.send(posts);
 }
 );

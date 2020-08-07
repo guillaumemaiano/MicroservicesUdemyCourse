@@ -28,7 +28,8 @@ const verbose = (() => {
 
 // provides full list of posts and comments
 app.get(pathToPosts, (req, res) => {  
-    res.send({status: 'OK', data: {"posts": posts}});
+    //res.status(200).send({status: 'OK', posts: posts});
+    res.send({status: 'OK', posts: posts});
 });
 
 // event bus communication
