@@ -27,7 +27,7 @@ app.post(pathToEvents, (req, res) => {
     switch (req.body.type) {
         case 'CommentCreated':
             console.log('Comment Creation detected.');
-            posts.push({id: req.body.data.randomId, content: req.body.data.content});   
+            posts.push({id: req.body.data.randomId, postId, content: req.body.data.content});   
             break;
         case 'PostCreated':
             console.log('Post Creation detected.');
