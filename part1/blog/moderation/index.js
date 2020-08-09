@@ -40,10 +40,19 @@ const app = express();
 app.use(parser.json());
 app.use(cors());
 
+app.get('/moderation', (req, res) => {
+
+    res.send(500);
+});
+
+// Event bus communication
+app.post('/events', (req, res) => {
+    console.log("Received event: " + req.body.type);
+    res.send({});
+});
+
 app.listen(moderationPort, () => {
     if (verbose === true) {
         console.log("Listening on " + moderationPort);
-    } else {
-        console.log("eeeeee");
     }
 });
