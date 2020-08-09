@@ -36,14 +36,17 @@ app.post(path, async (req, res) => {
     comments.push(comment);
     commentsByPostId[postId] = comments;
 
-    await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentCreated', data: {id: randomId, postId, content}});
+    await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentCreated', data: {id: randomId, postId, content, status: 'pending'}});
 
     res.status(201).send("id & comment: "  + randomId + " : " + content);
 });
 
 // Event bus communication
-app.post('/events', (req, res) => {
+app.post('/events', async (req, res) => {
     console.log("Received event: " + req.body.type);
+    if (req.body.type === 'CommentModerated') {
+        await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentUpdated', data: {id: req.body.id, postId: req.body.postId, content: req.body.content, status: req.body.status}});
+    }
     res.send({});
 });
 
