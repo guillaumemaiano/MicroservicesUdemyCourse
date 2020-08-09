@@ -2,15 +2,15 @@ const express = require('express');
 const axios = require('axios');
 const parser = require('body-parser');
 const cors = require('cors');
-//import Moderator from './GeneratedJS/Moderator'
-const moderator = require('./GeneratedJS/Moderator');
+//const Moderator = require('./GeneratedJS/Moderator');
+import { Moderator } from './GeneratedJS/Moderator.js';
 
 const moderationPort = (() => {
-    const arguments = process.argv;
+    const argumentsFromCL = process.argv;
     var customPort;
-    if (arguments.some(function (val, index, arguments) {
+    if (argumentsFromCL.some(function (val, index, args) {
         if (val === 'port') {
-            customPort = arguments[index+1];
+            customPort = args[index+1];
             return true;
         }
     })) {
@@ -23,8 +23,8 @@ const moderationPort = (() => {
 )();
 
 const verbose = (() => {
-    const arguments = process.argv;
-    return arguments.some(function (val, index, arguments) {
+    const argumentsFromCL = process.argv;
+    return argumentsFromCL.some(function (val, index, args) {
         console.log(index + ': ' + val);
         if (val === 'verbose') {
             console.log("Talkative mode engaged. How do you do?")
@@ -34,29 +34,25 @@ const verbose = (() => {
     }
 )();
 
-const pathToPosts='/moderation';
 const pathToEvents= '/events';
+
+const moderation = Moderator();
 
 const app = express();
 
 app.use(parser.json());
 app.use(cors());
 
-app.get('/moderation', (req, res) => {
-
-    res.send(500);
-});
-
 // Event bus communication
-app.post(pathToEvents, (req, res) => {
+app.post(pathToEvents, async (req, res) => {
     if (verbose) {
         console.log("Received event: " + req.body.type);
     }
     // Note: there are now event types all over the place
     // What's the best practice, create an enum in the event-bus?
     if (req.body.type === 'CommentCreated') {
-        // Prepare for moderation
-        console.log("We should moderate comment " + req.body.id);
+        const status = moderation.moderate(req.body.content);
+        await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentModerated', data: {id: req.body.id, postId: req.body.postId, content: req.body.content, status: status}});
     }
 
     res.send({});

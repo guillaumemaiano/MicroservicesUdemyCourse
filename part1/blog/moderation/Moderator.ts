@@ -29,3 +29,5 @@ class Moderator {
         }
     }
 }
+
+export { Moderator };
