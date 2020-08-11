@@ -3,7 +3,8 @@ const axios = require('axios');
 const parser = require('body-parser');
 const cors = require('cors');
 //const Moderator = require('./GeneratedJS/Moderator');
-import { Moderator } from './GeneratedJS/Moderator.js';
+//import { Moderator } from './GeneratedJS/Moderator.js';
+//import * as Moderator from './GeneratedJS/Moderator.js';
 
 const moderationPort = (() => {
     const argumentsFromCL = process.argv;
@@ -36,7 +37,7 @@ const verbose = (() => {
 
 const pathToEvents= '/events';
 
-const moderation = Moderator();
+//const moderation = Moderator();
 
 const app = express();
 

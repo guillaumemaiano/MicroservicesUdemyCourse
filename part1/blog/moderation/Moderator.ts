@@ -4,7 +4,7 @@ enum ModerationStatus {
     Approved = 'approved'
 }
 
-class Moderator {
+export class Moderator {
 
     private filteredWords = ['orange'];
 
@@ -29,5 +29,3 @@ class Moderator {
         }
     }
 }
-
-export { Moderator };
