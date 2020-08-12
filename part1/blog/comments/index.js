@@ -16,13 +16,27 @@ const path = '/posts/:id/comments';
 
 const commentsByPostId = {};
 
+const verbose = (() => {
+    const argumentsFromCL = process.argv;
+    return argumentsFromCL.some(function (val, index, args) {
+        console.log(index + ': ' + val);
+        if (val === 'verbose') {
+            console.log("Talkative mode engaged. How do you do?")
+            return true;
+        }
+    });
+    }
+)();
+
 app.use(parser.json());
 app.use(cors());
 
 // GET
 app.get(path, (req, res) => {
     const comments = commentsByPostId[req.params.id] || [];
-    // console.log("Comments Array ", commentsByPostId, " : ", comments, ".");
+    if (verbose) {
+       console.log("Comments Array ", commentsByPostId, " : ", comments, ".");
+    }
     res.status(200).send(comments);
 });
 
@@ -43,15 +57,23 @@ app.post(path, async (req, res) => {
 
 // Event bus communication
 app.post('/events', async (req, res) => {
-    console.log("Received event: " + req.body.type);
+    if (verbose) {
+      console.log("Received event: " + req.body.type);
+    }
     if (req.body.type === 'CommentModerated') {
-        await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentUpdated', data: {id: req.body.id, postId: req.body.postId, content: req.body.content, status: req.body.status}});
+        await axios.post(`http://localhost:${eventbusPort}/events`, {
+            type: 'CommentUpdated', data: {id: req.body.id, postId: req.body.postId, content: req.body.content, status: req.body.status}
+        });
     }
     res.send({});
 });
 
 // LISTEN
-app.listen(port, () => {console.log('Listening on port '+ port);});
+app.listen(port, () => {
+    if (verbose) {
+     console.log('Listening on port '+ port);
+    }
+});
 
 
 // curl -X  POST -H "Content-Type: application/json" -d '{ "content": "Commenting with my FIST."}' http://localhost:4001/posts/someid/comments/
