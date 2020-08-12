@@ -1,7 +1,7 @@
 {
   "name": "moderation",
   "version": "1.0.0",
-  "description": "",
+  "description": "Service de moderation",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",

@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const parser = require('body-parser');
 const cors = require('cors');
+const { createNoSubstitutionTemplateLiteral } = require('typescript');
 //const Moderator = require('./GeneratedJS/Moderator');
 //import { Moderator } from './GeneratedJS/Moderator.js';
 //import * as Moderator from './GeneratedJS/Moderator.js';
@@ -23,6 +24,23 @@ const moderationPort = (() => {
     }
 )();
 
+const eventbusPort = (() => {
+    const argumentsFromCL = process.argv;
+    var customPort;
+    if (argumentsFromCL.some(function (val, index, args) {
+        if (val === 'eventbus') {
+            customPort = args[index+1];
+            return true;
+        }
+    })) {
+        console.log(`Custom event bus port detected: ${customPort}`);
+        return customPort;
+    } else {
+        return 4005;
+    }
+    }
+)();
+
 const verbose = (() => {
     const argumentsFromCL = process.argv;
     return argumentsFromCL.some(function (val, index, args) {
@@ -37,7 +55,81 @@ const verbose = (() => {
 
 const pathToEvents= '/events';
 
-//const moderation = Moderator();
+
+
+/**
+ * TypeScript code is not within my skills to call y, so I'll build that in JS inline for now
+ * 
+ * enum ModerationStatus {
+    Pending = 'pending',
+    Rejected = 'rejected',
+    Approved = 'approved'
+    }
+    export class Moderator {
+
+    private filteredWords = ['orange'];
+
+    constructor(filter: string[]) {
+        if (filter.isArray() && filter.length) {
+            this.filteredWords = filter;
+        }
+    }
+
+    private filterVocabulary = function(unfilteredText: string): Boolean {
+
+        return this.filteredWords.some( (e) =>
+         unfilteredText.includes(e)
+        );
+    }
+   
+    moderate = function(comment: string) : ModerationStatus {
+        if (this.filterVocabulary(comment)) {
+            return ModerationStatus.Rejected;
+        } else {
+            return ModerationStatus.Approved;
+        }
+    }
+}
+*/
+
+const pending = 0;
+const approved = 1;
+const rejected = 2;
+
+const moderationStatus = (status) => { 
+    switch (status) {
+    case pending:
+        return "pending";
+        break;
+    case approved:
+        return "approved";
+        break;
+    case rejected:
+        return "rejected";
+        break;
+    default:
+        return "FAIL";
+    }
+};
+
+const moderation = (comment, filteredWords = ["orange, cock"]) => {
+
+    if (verbose) {
+        console.log("Moderating comment: ", comment);
+    }
+    const filterVocabulary = (unfilteredText) => { 
+        console.log("Unfiltered Text: ", unfilteredText);
+        return filteredWords.some( (e) => { 
+            unfilteredText.includes(e); 
+        });
+    };
+
+    if (filterVocabulary(comment)) {
+        return moderationStatus(1);
+    } else {
+        return moderationStatus(2);
+    }
+};
 
 const app = express();
 
@@ -52,7 +144,7 @@ app.post(pathToEvents, async (req, res) => {
     // Note: there are now event types all over the place
     // What's the best practice, create an enum in the event-bus?
     if (req.body.type === 'CommentCreated') {
-        const status = moderation.moderate(req.body.content);
+        const status = moderation(req.body.data.content);
         await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentModerated', data: {id: req.body.id, postId: req.body.postId, content: req.body.content, status: status}});
     }
 
