@@ -76,7 +76,7 @@ app.post(pathToEvents, (req, res) => {
         const commentsForPost = parentPost.comments || [];
         if (update) {
             // delete by id, then store in empty array place
-            const arrayElementPosition = commentsForPost.find( e => e.id === comment.commentId);
+            const arrayElementPosition = commentsForPost.findIndex( e => e.id === comment.commentId);
             commentsForPost.splice(arrayElementPosition, 1, { id: comment.commentId, content: comment.commentContent, status: comment.commentStatus });
         } else {
             commentsForPost.push({ id: comment.commentId, content: comment.commentContent, status: comment.commentStatus });
