@@ -3,3 +3,18 @@
     margin: 5em;
     border: burlywood;
 }
+.error {
+    color: crimson;
+    border: red;
+    background-color: palevioletred;
+}
+
+.unmoderated {
+    border: darkgoldenrod;
+}
+
+.rejected {
+    background-color: dimgrey;
+    color: darkgrey;
+    border: dashed cadetblue;
+}
