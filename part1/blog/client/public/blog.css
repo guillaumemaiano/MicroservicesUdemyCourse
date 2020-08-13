@@ -10,7 +10,7 @@
 }
 
 .unmoderated {
-    border: darkgoldenrod;
+    border: dotted goldenrod;
 }
 
 .rejected {

@@ -122,7 +122,7 @@ const moderation = (comment, filteredWords = ["orange", "cock"]) => {
     };
     
     if (filterVocabulary(comment)) {
-        return moderationStatus(2);
+        return moderationStatus(0);
     } else {
         return moderationStatus(1);
     }
