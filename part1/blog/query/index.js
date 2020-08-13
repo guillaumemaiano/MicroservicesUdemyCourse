@@ -63,6 +63,7 @@ app.post(pathToEvents, (req, res) => {
     };
 
     const storeComment = (comment, update = false) => {
+        console.log("Passed to comment storage: ", comment);
         // parentPost must exist at this stage (since someone commented on it)
         const parentPost = ((postArray, id) => {
             for (var i = 0; i < postArray.length; i++) {
@@ -75,7 +76,8 @@ app.post(pathToEvents, (req, res) => {
         const commentsForPost = parentPost.comments || [];
         if (update) {
             // delete by id, then store in empty array place
-            // TODO
+            const arrayElementPosition = commentsForPost.find( e => e.id === comment.commentId);
+            commentsForPost.splice(arrayElementPosition, 1, { id: comment.commentId, content: comment.commentContent, status: comment.commentStatus });
         } else {
             commentsForPost.push({ id: comment.commentId, content: comment.commentContent, status: comment.commentStatus });
         }
@@ -103,9 +105,12 @@ app.post(pathToEvents, (req, res) => {
         case 'CommentUpdated':
             if (verbose) {
                 console.log('Comment Update detected, updating data known to Query.');
-                const comment = parseCommentFromData(req.body.data);
-                storeComment(comment, true);
             }
+            const updatedComment = parseCommentFromData(req.body.data);
+            if (verbose) {
+                console.log("Comment updated with: ", req.body.data, updatedComment);
+            }  
+            storeComment(updatedComment, true);
             break;
         case 'PostCreated':
             if (verbose) {

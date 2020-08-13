@@ -16,7 +16,7 @@ const busPort = 4005;
 app.post('/events', (req, res) => {
 
     const event = req.body;
-
+    
     servicePorts.forEach((port) => {
         axios.post(`http://localhost:${port}/events`, event);
         console.log(`posted on ${port}`);

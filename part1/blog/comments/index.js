@@ -58,11 +58,12 @@ app.post(path, async (req, res) => {
 // Event bus communication
 app.post('/events', async (req, res) => {
     if (verbose) {
-      console.log("Received event: " + req.body.type);
+      console.log("Received event: ", req.body.type);
     }
     if (req.body.type === 'CommentModerated') {
+        console.log("Comments was moderated, informing via update event", req.body, req.body.data.commentId, req.body.data.postId, req.body.data.content, req.body.data.status);
         await axios.post(`http://localhost:${eventbusPort}/events`, {
-            type: 'CommentUpdated', data: {id: req.body.id, postId: req.body.postId, content: req.body.content, status: req.body.status}
+            type: 'CommentUpdated', data: { id: req.body.data.commentId, postId: req.body.data.postId, content: req.body.data.content, status: req.body.data.status }
         });
     }
     res.send({});

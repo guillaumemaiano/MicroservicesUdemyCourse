@@ -145,7 +145,7 @@ app.post(pathToEvents, async (req, res) => {
     // What's the best practice, create an enum in the event-bus?
     if (req.body.type === 'CommentCreated') {
         const status = moderation(req.body.data.content);
-        await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentModerated', data: {id: req.body.id, postId: req.body.postId, content: req.body.content, status: status}});
+        await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentModerated', data: {commentId: req.body.data.id, postId: req.body.data.postId, content: req.body.data.content, status: status}});
     }
 
     res.send({});
