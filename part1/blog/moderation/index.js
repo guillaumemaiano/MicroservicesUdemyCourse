@@ -112,22 +112,19 @@ const moderationStatus = (status) => {
     }
 };
 
-const moderation = (comment, filteredWords = ["orange, cock"]) => {
+const moderation = (comment, filteredWords = ["orange", "cock"]) => {
 
     if (verbose) {
         console.log("Moderating comment: ", comment);
     }
     const filterVocabulary = (unfilteredText) => { 
-        console.log("Unfiltered Text: ", unfilteredText);
-        return filteredWords.some( (e) => { 
-            unfilteredText.includes(e); 
-        });
+        return filteredWords.some( e => unfilteredText.includes(e) );
     };
-
+    
     if (filterVocabulary(comment)) {
-        return moderationStatus(1);
-    } else {
         return moderationStatus(2);
+    } else {
+        return moderationStatus(1);
     }
 };
 
