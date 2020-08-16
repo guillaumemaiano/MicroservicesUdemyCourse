@@ -1,3 +1,5 @@
+# Individual pod
+# Superseded in the project by a deployment yaml caled posts-depl.yaml
 apiVersion: v1
 kind: Pod
 metadata:
