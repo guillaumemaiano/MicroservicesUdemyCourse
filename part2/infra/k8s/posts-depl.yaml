@@ -15,4 +15,6 @@ spec:
     spec:
       containers:
         - name: posts
-          image: guillaumemaiano/posts-app-udemy-grider:0.0.1
+          #image: guillaumemaiano/posts-app-udemy-grider:0.0.1
+          # not specifying a version number defaults to latest, as in docker
+          image: guillaumemaiano/posts-app-udemy-grider
