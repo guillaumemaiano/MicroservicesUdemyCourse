@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: posts-srv
+spec:
+  type: NodePort
+  selector:
+    app: posts
+  ports:
+    # I can set those to various values in code, on the command line, if needed.
+    # here I'll go with Grider's choices
+    - name: posts
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
