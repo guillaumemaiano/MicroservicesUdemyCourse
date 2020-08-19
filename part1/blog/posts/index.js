@@ -14,7 +14,40 @@ app.use(parser.json());
 app.use(cors());
 
 var portNumber = 4000;
-var eventbusPortNumber = 4005;
+
+const eventbusPort = (() => {
+    const argumentsFromCL = process.argv;
+    var customPort;
+    if (argumentsFromCL.some(function (val, index, args) {
+        if (val === 'eventbus') {
+            customPort = args[index+1];
+            return true;
+        }
+    })) {
+        console.log(`Custom event bus port detected: ${customPort}`);
+        return customPort;
+    } else {
+        return 4005;
+    }
+    }
+)();
+
+const eventbusSrv = (() => {
+    const argumentsFromCL = process.argv;
+    var customPort;
+    if (argumentsFromCL.some(function (val, index, args) {
+        if (val === 'eventbusService') {
+            customPort = args[index+1];
+            return true;
+        }
+    })) {
+        console.log(`Custom event bus service detected: ${eventbusSrv}`);
+        return customPort;
+    } else {
+        return "localhost";
+    }
+    }
+)();
 
 const posts = {};
 
@@ -35,7 +68,7 @@ app.post('/posts', async (req, res
         randomId, title
     };
 
-    await axios.post(`http://localhost:${eventbusPortNumber}/events`, { type: 'PostCreated', data: posts[randomId]});
+    await axios.post(`http://${eventbusSrv}:${eventbusPort}/events`, { type: 'PostCreated', data: posts[randomId]});
     res.status(201).send(posts[randomId]);
 }
 );

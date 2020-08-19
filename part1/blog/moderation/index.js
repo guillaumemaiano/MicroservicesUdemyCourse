@@ -41,6 +41,23 @@ const eventbusPort = (() => {
     }
 )();
 
+const eventbusSrv = (() => {
+    const argumentsFromCL = process.argv;
+    var customPort;
+    if (argumentsFromCL.some(function (val, index, args) {
+        if (val === 'eventbusService') {
+            customPort = args[index+1];
+            return true;
+        }
+    })) {
+        console.log(`Custom event bus service detected: ${eventbusSrv}`);
+        return customPort;
+    } else {
+        return "localhost";
+    }
+    }
+)();
+
 const verbose = (() => {
     const argumentsFromCL = process.argv;
     return argumentsFromCL.some(function (val, index, args) {
@@ -142,7 +159,7 @@ app.post(pathToEvents, async (req, res) => {
     // What's the best practice, create an enum in the event-bus?
     if (req.body.type === 'CommentCreated') {
         const status = moderation(req.body.data.content);
-        await axios.post(`http://localhost:${eventbusPort}/events`, {type: 'CommentModerated', data: {commentId: req.body.data.id, postId: req.body.data.postId, content: req.body.data.content, status: status}});
+        await axios.post(`http://${eventbusSrv}:${eventbusPort}/events`, {type: 'CommentModerated', data: {commentId: req.body.data.id, postId: req.body.data.postId, content: req.body.data.content, status: status}});
     }
 
     res.send({});

@@ -24,6 +24,23 @@ const queryPort = (() => {
 }
 )();
 
+const eventbusSrv = (() => {
+    const argumentsFromCL = process.argv;
+    var customPort;
+    if (argumentsFromCL.some(function (val, index, args) {
+        if (val === 'eventbusService') {
+            customPort = args[index+1];
+            return true;
+        }
+    })) {
+        console.log(`Custom event bus service detected: ${eventbusSrv}`);
+        return customPort;
+    } else {
+        return "localhost";
+    }
+    }
+)();
+
 const verbose = (() => {
     const arguments = process.argv;
     return arguments.some(function (val, index, arguments) {
